@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase
 import {db} from '../../firebase.config'
 import { toast } from 'react-toastify';
 import {setDoc, doc, serverTimestamp} from 'firebase/firestore'
+import OAuth from '../components/OAuth';
 const SignUp = () => {
     const [showPassword,setShowPassword] = useState(false)
     const [formData,setFormData] = useState({
@@ -82,10 +83,10 @@ const SignUp = () => {
                         <p className="signUpText">Sign Up</p>
                         <button className='signUpButton'> <ArrowRightIcon fill='#ffffff' width = '36px' height='36px' /> </button>
                     </div>
-
-
-                    <Link to='/sign-in' className='registerLink'>Sign In Instead</Link>
                 </form>
+                <OAuth />
+                <Link to='/sign-in' className='registerLink'>Sign In Instead</Link>
+
             </main>
             
         </div>  

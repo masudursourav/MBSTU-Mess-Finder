@@ -4,6 +4,7 @@ import visibilityIcon from '../assets/svg/visibilityIcon.svg'
 import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { toast } from 'react-toastify';
+import OAuth from '../components/OAuth';
 const SignIn = () => {
     const [showPassword,setShowPassword] = useState(false)
     const [formData,setFormData] = useState({
@@ -64,10 +65,9 @@ const SignIn = () => {
                         <p className="signInText">Sign In</p>
                         <button className='signInButton'> <ArrowRightIcon fill='#ffffff' width = '36px' height='36px' /> </button>
                     </div>
-
-
-                    <Link to='/sign-up' className='registerLink'>Sign Up Instead</Link>
                 </form>
+                <OAuth />
+                <Link to='/sign-up' className='registerLink'>Sign Up Instead</Link>
             </main>
             
         </div>  
