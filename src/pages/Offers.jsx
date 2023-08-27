@@ -1,6 +1,5 @@
 import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { db } from "../../firebase.config";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
@@ -9,8 +8,6 @@ import ListingItem from "../components/ListingItem";
 const Offers = () => {
     const [listings,setListings] = useState(null)
     const [loading,setLoading] = useState(true)
-
-    const params = useParams()
 
     useEffect(() => {
         const fetchListing = async ()=>{
