@@ -1,15 +1,18 @@
 import { getAuth, updateProfile } from "firebase/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, orderBy, query, updateDoc, where } from "firebase/firestore";
 import {db} from "../../firebase.config"
 import { toast } from "react-toastify";
 import arrowRight from "../assets/svg/keyboardArrowRightIcon.svg"
 import homeIcon from "../assets/svg/homeIcon.svg"
+import ListingItem from "../components/ListingItem";
 
 const Profile = () => {
     const auth = getAuth();
     const [changeDetails, setChangeDetails] = useState(false)
+    const [listings,setListings] = useState(null)
+    const [loading,setLoading] = useState(true)
     const [formData, setFormData] = useState({
         name: auth.currentUser.displayName,
         email: auth.currentUser.email
@@ -17,7 +20,26 @@ const Profile = () => {
     const {name,email} = formData
     const navigate = useNavigate()
 
-    
+    useEffect(()=>{
+        const fetchUserListings = async ()=>{
+            const listingRef = collection(db, 'listing')
+            const q = query(listingRef, where('userRef','==',auth.currentUser.uid),
+            orderBy('timestamp','desc'))
+
+            const querySnap = await getDocs(q)
+            let listings = []
+            querySnap.forEach((doc)=>{
+                return listings.push({
+                    id:doc.id,
+                    data:doc.data()
+                })
+            })
+            setListings(listings)
+            setLoading(false)
+        }
+        fetchUserListings()
+
+    },[auth.currentUser.uid])
 
 
 
@@ -47,6 +69,20 @@ const Profile = () => {
             ...prevState,
             [e.target.id]: e.target.value
         }))
+    }
+
+
+    const onDelete = async (listingId) =>{
+        if(window.confirm('Are you sure? You want to delete this listing')){
+            await deleteDoc(doc(db, 'listing',listingId))
+            const updatedListings = listings.filter((listing) => listing.id !== listingId)
+            setListings(updatedListings)
+            toast.success('The listing deleted successfully')
+        }
+    }
+
+    const onEdit = (listingId) => {
+        navigate(`/edit-listing/${listingId}`)
     }
     return (
         <>
@@ -81,6 +117,22 @@ const Profile = () => {
                         <p>Rent your home or rooms</p>
                         <img src={arrowRight} alt="arrow right" />
                     </Link>
+
+                    {!loading && listings?.length > 0 && 
+                    <>
+                    <p className="listingText">
+                        Your Listings 
+                    </p>
+                    <ul className="listingsList">
+                        {listings.map((listing)=>(
+                            <ListingItem key = {listing.id} listing = {listing.data} id={listing.id} 
+                            onDelete={() => onDelete(listing.id)}
+                            onEdit={() => onEdit(listing.id)}
+                            />
+                        ))}
+                    </ul>
+                    </>
+                    }
                 </main>
             </div>    
         </>
