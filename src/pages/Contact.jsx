@@ -11,6 +11,10 @@ const Contact = () => {
 
     const params = useParams()
 
+    const onChange = (e)=>{
+            setMessage(e.target.value)
+    }
+
     useEffect(()=> {
         const getLandlord = async ()=>{
             const docRef = doc(db,'users',params.landlordId)
@@ -35,8 +39,20 @@ const Contact = () => {
                 { landlord !== null && (
                     <main>
                         <div className="contactLandlord">
-                            
+                            <p className="landlordName">Contact with {landlord?.name}</p>
                         </div>
+
+                        <form className="messageForm">
+                            <div className="messageDiv">
+                                <label htmlFor="message" className="messageLabel">Message</label>
+                                <textarea name="message" id="message" className="textarea" value={message}
+                                onChange={onChange}></textarea>
+                            </div>
+
+                            <a href={`mailto:${landlord.email}?Subject=${searchParams.get('listingName')}&body=${message}`}>
+                                <button className="primaryButton" type="button">Send Message</button>
+                            </a>
+                        </form>
                     </main>
                 )
                 }

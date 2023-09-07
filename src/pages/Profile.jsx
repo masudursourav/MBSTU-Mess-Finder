@@ -16,6 +16,11 @@ const Profile = () => {
     })
     const {name,email} = formData
     const navigate = useNavigate()
+
+    
+
+
+
     const onLogout = () => {
         auth.signOut();
         navigate('/')

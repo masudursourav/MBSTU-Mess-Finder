@@ -5,6 +5,10 @@ import { getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase.config';
 import Spinner from '../components/Spinner'
+import 'swiper/css'
+import 'swiper/css/bundle'
+
+import {Swiper, SwiperSlide } from 'swiper/react';
 
 const Listing = () => {
     const [listing,setListing] = useState(null)
@@ -34,7 +38,7 @@ const Listing = () => {
     return (
         <>
            <main>
-            <div className="shareIconDiv" onClick={()=>{
+           <div className="shareIconDiv" onClick={()=>{
                 navigator.clipboard.writeText(window.location.href)
                 setShareLinkCopied(true)
                 setTimeout(()=>{
@@ -44,6 +48,24 @@ const Listing = () => {
                 <img src={shareIcon} alt="share icon" />
                 {shareLinkCopied && <p className='linkCopied'>Link Copied</p>}
             </div>
+
+
+    <Swiper
+      spaceBetween={0}
+      slidesPerView={1}
+      onSlideChange={() => console.log('slide change')}
+      onSwiper={(swiper) => console.log(swiper)}
+    >
+      {listing.imageUrls.map((url, index) => (
+          <SwiperSlide key={index}>
+            <div
+              className='swiperSlideDiv'
+            ><img className='swiperSlideImg' src={listing.imageUrls[index]} alt="" /></div>
+          </SwiperSlide>
+        ))}
+    </Swiper>
+
+            
 
             <div className="listingDetails">
                 <p className="listingName">{listing.name} - {listing.offer ? listing.discountedPrice : listing.regularPrice} ৳</p>
@@ -68,7 +90,9 @@ const Listing = () => {
                 </ul>
 
                 <p className="listingLocationTitle">Location</p>
-
+                
+                <a href={`https://maps.google.com/maps?q=${listing.location}`} target="_blank" rel="noopener noreferrer">
+                    <button className='primaryButton'>Click to see the location on GMap</button></a>
 
                 <p className="listingLocationTitle">Contact Details</p>
                 <p className="listingLocation">Phone : {listing.Phone}</p>    
